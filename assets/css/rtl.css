@@ -1,0 +1,258 @@
+/* ============================================================
+   SIRAJ — RTL (Right-to-Left) Layout
+   Applied when <html dir="rtl"> is set
+   Font: Noto Kufi Arabic
+============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@300;400;600;700;900&display=swap');
+
+/* ── Base RTL ── */
+[dir="rtl"] {
+  font-family: 'Noto Kufi Arabic', 'Lato', sans-serif;
+}
+
+[dir="rtl"] body {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+}
+
+/* ── Cinzel doesn't support Arabic — use Noto Kufi for headings ── */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] .brand-text,
+[dir="rtl"] .nav-brand-text,
+[dir="rtl"] .auth-form-title,
+[dir="rtl"] .welcome-title,
+[dir="rtl"] .page-header-left h1,
+[dir="rtl"] .modal-title,
+[dir="rtl"] .sec-title,
+[dir="rtl"] .section-title {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+/* ── NAV RTL ── */
+[dir="rtl"] .siraj-nav {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .nav-links {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .nav-right {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .brand {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .brand-text {
+  letter-spacing: 0;
+}
+
+/* ── DASHBOARD RTL ── */
+[dir="rtl"] .dashboard-content {
+  direction: rtl;
+}
+[dir="rtl"] .page-header {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .stat-cards {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .home-nav-cards {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .filter-bar {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .status-bar {
+  flex-direction: row-reverse;
+}
+
+/* ── LAMP CARD RTL ── */
+[dir="rtl"] .lamp-card {
+  text-align: right;
+}
+[dir="rtl"] .lamp-status-row {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+/* ── TABLE RTL ── */
+[dir="rtl"] .data-table th,
+[dir="rtl"] .data-table td {
+  text-align: right;
+}
+[dir="rtl"] .data-table th:last-child,
+[dir="rtl"] .data-table td:last-child {
+  text-align: left;
+}
+
+/* ── MODAL RTL ── */
+[dir="rtl"] .modal-box {
+  text-align: right;
+  direction: rtl;
+}
+[dir="rtl"] .modal-close {
+  right: auto;
+  left: 18px;
+}
+
+/* ── AUTH RTL ── */
+[dir="rtl"] .auth-wrapper {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .auth-form-panel {
+  border-right: none;
+  border-left: 1px solid rgba(126,200,227,0.10);
+}
+[dir="rtl"] .auth-brand-panel {
+  border-left: none;
+  border-right: 1px solid rgba(126,200,227,0.08);
+}
+[dir="rtl"] .role-tabs {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .back-home-btn {
+  direction: rtl;
+}
+
+/* ── PROFILE RTL ── */
+[dir="rtl"] .profile-layout {
+  direction: rtl;
+}
+[dir="rtl"] .profile-field {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .profile-actions {
+  flex-direction: row-reverse;
+}
+
+/* ── MAP RTL ── */
+[dir="rtl"] .map-layout {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .map-sidebar {
+  border-right: none;
+  border-left: 1px solid rgba(126,200,227,0.09);
+}
+
+/* ── REPORT CARDS RTL ── */
+[dir="rtl"] .report-card {
+  border-left: none;
+  border-right: 5px solid transparent;
+  text-align: right;
+}
+[dir="rtl"] .report-card.pending     { border-right-color: var(--warning); }
+[dir="rtl"] .report-card.in_progress { border-right-color: var(--accent); }
+[dir="rtl"] .report-card.resolved    { border-right-color: var(--success); }
+[dir="rtl"] .report-card-header {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .report-card-left {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .report-footer {
+  flex-direction: row-reverse;
+}
+
+/* ── WELCOME/LANDING RTL ── */
+[dir="rtl"] .welcome-nav {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .nav-anchors {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .hero-eyebrow,
+[dir="rtl"] .hero-title,
+[dir="rtl"] .hero-desc {
+  font-family: 'Noto Kufi Arabic', sans-serif;
+  letter-spacing: 0;
+}
+[dir="rtl"] .hero-cta {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .footer-grid {
+  direction: rtl;
+}
+[dir="rtl"] .footer-links {
+  text-align: right;
+}
+[dir="rtl"] .footer-inner {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .section-bar {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .about-stats {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .cards-grid {
+  direction: rtl;
+}
+
+/* ── FORM RTL ── */
+[dir="rtl"] .form-group {
+  text-align: right;
+}
+[dir="rtl"] .form-input,
+[dir="rtl"] .form-select,
+[dir="rtl"] .report-textarea {
+  text-align: right;
+  direction: rtl;
+}
+[dir="rtl"] .toggle-pw {
+  right: auto;
+  left: 14px;
+}
+[dir="rtl"] .input-wrapper .form-input {
+  padding-right: 16px;
+  padding-left: 40px;
+}
+
+/* ── ALERTS RTL ── */
+[dir="rtl"] .alert {
+  text-align: right;
+  direction: rtl;
+}
+
+/* ── MOBILE RTL ── */
+@media (max-width: 640px) {
+  [dir="rtl"] .nav-links {
+    flex-direction: row;
+  }
+  [dir="rtl"] .auth-wrapper {
+    flex-direction: column;
+  }
+}
+
+/* ── SUMMARY CARDS RTL ── */
+[dir="rtl"] .summary-cards {
+  direction: rtl;
+}
+
+/* ── PW RULES RTL ── */
+[dir="rtl"] .pw-rules {
+  flex-direction: row-reverse;
+}
+
+/* ── NAV BTN with icon: reverse icon order ── */
+[dir="rtl"] .nav-btn {
+  flex-direction: row-reverse;
+}
+
+/* ── PAGE HEADER: button goes to left in RTL ── */
+[dir="rtl"] .page-header {
+  flex-direction: row-reverse;
+}
+
+/* Fix: stat-label text center */
+[dir="rtl"] .stat-label {
+  letter-spacing: 0;
+}
+
+/* ── Footer brand reversed ── */
+[dir="rtl"] .footer-brand {
+  flex-direction: row-reverse;
+}
