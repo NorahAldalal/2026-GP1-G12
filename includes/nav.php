@@ -12,12 +12,14 @@ $adminLinks = [
   ['href'=>'admin-map.php',     'key'=>'map',     'label'=>'Map',       'icon'=>'◎'],
   ['href'=>'admin-users.php',   'key'=>'users',   'label'=>'Employees', 'icon'=>'◈'],
   ['href'=>'admin-reports.php', 'key'=>'reports', 'label'=>'Reports',   'icon'=>'◇'],
+  ['href'=>'admin-analytics.php', 'key'=>'analytics', 'label'=>'analytics',   'icon'=>'⌂'],
 ];
 $empLinks = [
   ['href'=>'employee-home.php',       'key'=>'home',    'label'=>'Home',       'icon'=>'⌂'],
   ['href'=>'employee-status.php',     'key'=>'status',  'label'=>'Status',     'icon'=>'◉'],
   ['href'=>'employee-map.php',        'key'=>'map',     'label'=>'Map',        'icon'=>'◎'],
   ['href'=>'employee-my-reports.php', 'key'=>'reports', 'label'=>'My Reports', 'icon'=>'◇'],
+  ['href'=>'employee-analytics.php', 'key'=>'analytics', 'label'=>'analytics', 'icon'=>'⌂'],
 ];
 $links = $navRole === 'admin' ? $adminLinks : $empLinks;
 ?>
