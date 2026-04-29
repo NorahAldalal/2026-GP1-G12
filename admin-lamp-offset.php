@@ -418,10 +418,7 @@ body.light-mode .offset-empty { color: #4a5568; }
     <div class="offset-header">
       <div>
         <div class="offset-title"><?= htmlspecialchars($selectedArea['AreaName']) ?> — Set-Offset Page</div>
-        <div class="offset-sub">
-          Set the position offset for each lamp relative to the area's GPS coordinates.
-          Each lamp shares the same GPS unit, so offsets define their individual positions on the map.
-        </div>
+       
       </div>
     </div>
 
