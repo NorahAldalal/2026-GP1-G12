@@ -47,7 +47,7 @@ Siraj is a smart IoT-based street lighting system designed to monitor and reduce
 **Students:** <br>
 Norah Abdulrahman Aldalal <br>
 Aseel Abdulaziz Almubaddal <br>
-Deema abdullah alfarhoud <br>
+Deema Abdullah Alfarhoud <br>
 Reema Abdulaziz Alnajim
 
 ## Supervisor
