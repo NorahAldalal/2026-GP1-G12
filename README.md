@@ -24,6 +24,7 @@ Siraj is a smart IoT-based street lighting system designed to monitor and reduce
 - PHP
 - MySQL / phpMyAdmin
 - HTML, CSS, JavaScript
+- Arduino IDE
 
 ### Hardware
 - ESP32
