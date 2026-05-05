@@ -5,9 +5,10 @@
 #include <HTTPClient.h>
 
 // ── WiFi ─────────────────────────────────────────────────────
-const char* SSID     = "Home_WifiZain_5G";
-const char* PASSWORD = "Aa4321226";
-const char* SERVER   = "http://192.168.8.122/Siraj_GradProject/api/update_lamp.php";
+
+const char* SSID     = "wifi name";
+const char* PASSWORD = "wifi password";
+const char* SERVER   = "http://IP/Siraj/api/update_lamp.php";
 
 // ── Lamp IDs ─────────────────────────────────────────────────
 #define LAMP_PAIR1  1
