@@ -31,7 +31,7 @@ const char* SERVER   = "http://IP/Siraj/api/update_lamp.php";
 #define POT_THRESHOLD   1200
 #define BRIGHT_HIGH      150   // عند وجود حركة
 #define BRIGHT_LOW        40   // بدون حركة
-#define MOTION_TIMEOUT  10000   // 10 s
+#define MOTION_TIMEOUT  30000   // 30 s
 
 // ── Upload interval ──────────────────────────────────────────
 #define UPLOAD_INTERVAL 10000
