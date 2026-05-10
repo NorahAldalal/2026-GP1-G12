@@ -5,10 +5,10 @@
 #include <HTTPClient.h>
 
 // ── WiFi ─────────────────────────────────────────────────────
-
-const char* SSID     = "wifi name";
+const char* SSID  = "wifi name";
 const char* PASSWORD = "wifi password";
-const char* SERVER   = "http://IP/Siraj/api/update_lamp.php";
+const char* SERVER_UPDATE = "http://IP/Siraj/api/update_lamp.php";
+const char* SERVER_INSERT = "http://IP/Siraj/api/insert_reading.php";
 
 // ── Lamp IDs ─────────────────────────────────────────────────
 #define LAMP_PAIR1  1
@@ -29,48 +29,60 @@ const char* SERVER   = "http://IP/Siraj/api/update_lamp.php";
 
 // ── Brightness ───────────────────────────────────────────────
 #define POT_THRESHOLD   1200
-#define BRIGHT_HIGH      150   // عند وجود حركة
-#define BRIGHT_LOW        40   // بدون حركة
-#define MOTION_TIMEOUT  30000   // 30 s
+#define BRIGHT_HIGH      40  
+#define BRIGHT_LOW       20   
+#define BRIGHT_OFF       5    
+#define MOTION_TIMEOUT  10000 
 
-// ── Upload interval ──────────────────────────────────────────
-#define UPLOAD_INTERVAL 10000
+#define UPLOAD_INTERVAL 10000 // الرفع كل 10 ثوانٍ 
 
-// ── GPS ──────────────────────────────────────────────────────
-TinyGPSPlus    gps;
+TinyGPSPlus gps;
 HardwareSerial gpsSerial(2);
 
-// ── State ────────────────────────────────────────────────────
 unsigned long lastMotion1 = 0;
 unsigned long lastMotion2 = 0;
 unsigned long lastUpload  = 0;
 
+// ── Send data  ──────────────────────────────
+void sendToDB(int lampID, float lux, int motion, String status, float lat, float lng) {
 
-// ── Send data to database ─────────────────────────────────────
-void sendToDB(int lampID, float lux, int motion,
-              String status, float lat, float lng) {
   if (WiFi.status() != WL_CONNECTED) return;
 
-  HTTPClient http;
-  http.begin(SERVER);
-  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+  // update_lamp.php
+  HTTPClient httpUpdate;
+  httpUpdate.begin(SERVER_UPDATE);
+  httpUpdate.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-  String body = "lamp_id=" + String(lampID)
-              + "&lux="    + String(lux, 1)
-              + "&motion=" + String(motion)
-              + "&status=" + status
-              + "&lat="    + String(lat, 6)
-              + "&lng="    + String(lng, 6);
+  String bodyUpdate = "lamp_id=" + String(lampID)
+                    + "&lux="     + String(lux, 1)
+                    + "&motion="  + String(motion)
+                    + "&status="  + status
+                    + "&lat="     + String(lat, 6)
+                    + "&lng="     + String(lng, 6);
 
-  http.POST(body);
-  http.end();
+  int code1 = httpUpdate.POST(bodyUpdate);
+  Serial.printf("Update [Lamp%d] HTTP:%d\n", lampID, code1);
+  httpUpdate.end();
+
+  // insert_reading.php 
+  HTTPClient httpInsert;
+  httpInsert.begin(SERVER_INSERT);
+  httpInsert.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+  String bodyInsert = "lamp_id="        + String(lampID)
+                    + "&ambientLight="   + String(lux, 1)
+                    + "&motionDetected=" + String(motion);
+
+  int code2 = httpInsert.POST(bodyInsert);
+  Serial.printf("Reading [Lamp%d] HTTP:%d\n", lampID, code2);
+  httpInsert.end();
 }
 
-
+// ── Setup ────────────────────────────────────────────────────
 void setup() {
   Serial.begin(115200);
   delay(500);
-  Serial.println("=== Siraj (Motion Only Mode) ===");
+  Serial.println("=== Siraj (Final Integrated Mode) ===");
 
   pinMode(PIR1_PIN, INPUT);
   pinMode(PIR2_PIN, INPUT);
@@ -82,11 +94,25 @@ void setup() {
 
   gpsSerial.begin(9600, SERIAL_8N1, GPS_RX, GPS_TX);
 
+  Serial.print("Connecting WiFi");
   WiFi.begin(SSID, PASSWORD);
+
+  int tries = 0;
+  while (WiFi.status() != WL_CONNECTED && tries < 20) {
+    delay(500);
+    Serial.print(".");
+    tries++;
+  }
+
+  if (WiFi.status() == WL_CONNECTED)
+    Serial.printf("\nWiFi OK - IP: %s\n", WiFi.localIP().toString().c_str());
+  else
+    Serial.println("\nWiFi FAILED");
+
+  Serial.println("Ready!");
 }
 
-
-// ── MAIN LOOP ────────────────────────────────────────────────
+// ── Loop ─────────────────────────────────────────────────────
 void loop() {
 
   while (gpsSerial.available())
@@ -94,28 +120,21 @@ void loop() {
 
   unsigned long now = millis();
 
-  // ── Sensors ───────────────────────────────────────────
+  // ── Read sensors ───────────────────────────────────────
   bool pir1 = digitalRead(PIR1_PIN);
   bool pir2 = digitalRead(PIR2_PIN);
   int  ldr1 = analogRead(LDR1_PIN);
   int  ldr2 = analogRead(LDR2_PIN);
   int  pot  = analogRead(POT_PIN);
 
-#define MOTION_COOLDOWN 3000  // ignore أي حركة جديدة لمدة 3 ثواني
-
-if (pir1 && (now - lastMotion1 > MOTION_COOLDOWN)) {
-  lastMotion1 = now;
-}
-
-if (pir2 && (now - lastMotion2 > MOTION_COOLDOWN)) {
-  lastMotion2 = now;
-}
+  if (pir1) lastMotion1 = now;
+  if (pir2) lastMotion2 = now;
 
   bool motion1    = (now - lastMotion1 < MOTION_TIMEOUT);
   bool motion2    = (now - lastMotion2 < MOTION_TIMEOUT);
   bool manualMode = (pot > POT_THRESHOLD);
 
-  // ── Brightness ────────────────────────────────────────
+  // ── Base brightness ────────────────────────────────────
   int br1, br2;
 
   if (manualMode) {
@@ -124,6 +143,13 @@ if (pir2 && (now - lastMotion2 > MOTION_COOLDOWN)) {
     br1 = motion1 ? BRIGHT_HIGH : BRIGHT_LOW;
     br2 = motion2 ? BRIGHT_HIGH : BRIGHT_LOW;
   }
+
+  // ── Dynamic Fault Logic ─────────────
+  int threshold1 = (br1 == BRIGHT_HIGH) ? 8 : 1; 
+  int threshold2 = (br2 == BRIGHT_HIGH) ? 8 : 1; 
+
+  bool fault1 = !manualMode && (br1 > BRIGHT_OFF && ldr1 < threshold1);
+  bool fault2 = !manualMode && (br2 > BRIGHT_OFF && ldr2 < threshold2);
 
   // ── Output ────────────────────────────────────────────
   ledcWrite(LED1A_PIN, br1);
@@ -138,18 +164,33 @@ if (pir2 && (now - lastMotion2 > MOTION_COOLDOWN)) {
   // ── Upload ────────────────────────────────────────────
   if (now - lastUpload >= UPLOAD_INTERVAL) {
     lastUpload = now;
-    sendToDB(LAMP_PAIR1, (float)ldr1, motion1 ? 1 : 0,
-             br1 > 0 ? "on" : "off", gpsLat, gpsLng);
-    sendToDB(LAMP_PAIR2, (float)ldr2, motion2 ? 1 : 0,
-             br2 > 0 ? "on" : "off", gpsLat, gpsLng);
+    Serial.println(">>> Sending to DB (Update + Insert)...");
+    sendToDB(LAMP_PAIR1, (float)ldr1, motion1 ? 1 : 0, br1 > 0 ? "on" : "off", gpsLat, gpsLng);
+    sendToDB(LAMP_PAIR2, (float)ldr2, motion2 ? 1 : 0, br2 > 0 ? "on" : "off", gpsLat, gpsLng);
   }
 
-  // ── Debug ─────────────────────────────────────────────
+  // ── Serial Monitor ─────────────
   Serial.println("--------------------------------------");
-  Serial.printf("PIR1:%-8s | PIR2:%s\n",
-    pir1 ? "MOTION" : "clear", pir2 ? "MOTION" : "clear");
+  Serial.printf("PIR1:%-8s | PIR2:%s\n", pir1 ? "MOTION" : "clear", pir2 ? "MOTION" : "clear");
+  Serial.printf("LDR1:%4d | LDR2:%4d\n", ldr1, ldr2);
+  Serial.printf("Fault1:%-4s | Fault2:%s\n", fault1 ? "YES" : "no", fault2 ? "YES" : "no");
+  Serial.printf("POT:%4d | Mode:%s\n", pot, manualMode ? "MANUAL" : "AUTO");
   Serial.printf("Brightness P1:%3d | P2:%3d\n", br1, br2);
-  Serial.printf("Mode:%s\n", manualMode ? "MANUAL" : "AUTO");
+
+  if (!manualMode) {
+    if      (fault1 && !fault2) Serial.println("⚠  LAMP1 FAULT → Monitoring status");
+    else if (fault2 && !fault1) Serial.println("⚠  LAMP2 FAULT → Monitoring status");
+    else if (fault1 && fault2)  Serial.println("⚠  BOTH LAMPS FAULT");
+    else                        Serial.println("✓  Both lamps OK");
+  } else {
+    Serial.println(">> MANUAL mode");
+  }
+
+  Serial.printf("GPS: %s | Sats:%d\n",
+    gps.location.isValid() ? (String("Lat=") + String(gpsLat, 6) + " Lng=" + String(gpsLng, 6)).c_str() : "Searching...",
+    gps.satellites.value());
+
+  Serial.printf("WiFi: %s\n", WiFi.status() == WL_CONNECTED ? WiFi.localIP().toString().c_str() : "disconnected");
 
   delay(500);
 }
